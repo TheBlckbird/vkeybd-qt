@@ -6,9 +6,10 @@ QT  += core\
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-LIBS += -lasound \
-    -ljack \
-    -lX11
+LIBS += -L/opt/homebrew/Cellar/jack/1.9.22_1/lib \
+    -ljack
+
+INCLUDEPATH += /opt/homebrew/Cellar/jack/1.9.22_1/include
 
 CONFIG += \
     c++11 \
@@ -31,7 +32,7 @@ SOURCES += \
     input_keyboard_select.cpp \
     input_keyboard_udp.cpp \
     input_midi.cpp \
-    interface_alsa.cpp \
+    #interface_alsa.cpp \
     interface_audio.cpp \
     interface_jack.cpp \
     jack_save_load.cpp \
@@ -65,7 +66,7 @@ HEADERS += \
     input_keyboard_select.h \
     input_keyboard_udp.h \
     input_midi.h \
-    interface_alsa.h \
+    #interface_alsa.h \
     interface_audio.h \
     interface_jack.h \
     jack_save_load.h \

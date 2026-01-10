@@ -8,7 +8,8 @@ MainTabs::MainTabs(QList<QString> labels, int id, Config *config, OutputSystem o
     
     if (output == OutputSystem::Alsa)
     {
-        this->interface_audio = new InterfaceAlsa();
+        // TODO: Find way to still include Alsa
+        this->interface_audio = new InterfaceJack();
     }
     else if (output == OutputSystem::Jack)
     {

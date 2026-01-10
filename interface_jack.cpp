@@ -314,7 +314,11 @@ void InterfaceJack::sendEvent(int port, QString opcode, int channel, int value, 
     qDebug() << "type: " << type << " value: " << value_ << " velocity: " << velocity_;
     
     //const jack_midi_data_t data[3] = { type, value_, velocity_ };
-    const jack_midi_data_t data[3] = { op, value, velocity };
+    const jack_midi_data_t data[3] = {
+        static_cast<jack_midi_data_t>(op),
+        static_cast<jack_midi_data_t>(value),
+        static_cast<jack_midi_data_t>(velocity)
+    };
     qDebug() << data;
     
     /*

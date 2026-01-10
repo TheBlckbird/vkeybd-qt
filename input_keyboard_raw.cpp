@@ -156,14 +156,15 @@ void InputKeyboardRawController::keyboardHelper(QString devpath, KeyboardMode mo
     {
         errno = 0;
         // to consume the event and not let it passed through to any other software
-        if (mode == KeyboardMode::lock)
+        // TODO: Get back to this
+        /*if (mode == KeyboardMode::lock)
         {
             if (ioctl(this->fd, EVIOCGRAB, 1)) {
                 //const int saved_errno = errno;
                 //close(this->fd);
                 //return errno = (saved_errno) ? errno : EACCES;
             }
-        }
+        }*/
         
         this->worker = new InputKeyboardRawWorker(this->n, this->fd);
         //this->worker->initialize();
