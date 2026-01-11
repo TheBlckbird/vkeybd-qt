@@ -1,5 +1,7 @@
 #include "interface_jack.h"
 
+#define EX_UNAVAILABLE 1
+
 InterfaceJack::InterfaceJack(InterfaceAudio *parent) : InterfaceAudio(parent)
 {
     //this->label_string = "jack-midi-"+label;
@@ -28,7 +30,7 @@ void InterfaceJack::createNewPort(QString label)
 {
     if (jack_deactivate(this->jack_client)) {
         qDebug() << "Cannot deactivate JACK client.";
-        //exit(EX_UNAVAILABLE);
+        exit(EX_UNAVAILABLE);
     }
     
     this->output_port = jack_port_register(this->jack_client, label.toLocal8Bit(), JACK_DEFAULT_MIDI_TYPE,
@@ -36,17 +38,17 @@ void InterfaceJack::createNewPort(QString label)
     
     if (this->output_port == NULL) {
         qDebug() << "Could not register JACK output port.";
-        //exit(EX_UNAVAILABLE);
+        exit(EX_UNAVAILABLE);
     }
     
     this->list_of_output_ports.append(this->output_port);
     
-    this->input_port = jack_port_register(this->jack_client, label.toLocal8Bit(), JACK_DEFAULT_MIDI_TYPE,
+    this->input_port = jack_port_register(this->jack_client, (label + "in").toLocal8Bit(), JACK_DEFAULT_MIDI_TYPE,
         JackPortIsInput, 0);
     
     if (this->input_port == NULL) {
         qDebug() << "Could not register JACK input port.";
-        //exit(EX_UNAVAILABLE);
+        exit(EX_UNAVAILABLE);
     }
     
     this->list_of_input_ports.append(this->input_port);
@@ -58,7 +60,7 @@ void InterfaceJack::createNewPort(QString label)
     
     if (jack_activate(this->jack_client)) {
         qDebug() << "Cannot activate JACK client.";
-        //exit(EX_UNAVAILABLE);
+        exit(EX_UNAVAILABLE);
     }
 }
 
