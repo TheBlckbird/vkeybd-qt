@@ -165,7 +165,7 @@ int InterfaceJack::jack_process_midi_output(jack_nframes_t nframes)
             qDebug() << "jack_midi_event_reserve failed, NOTE LOST";
             break;
         }
-        
+
         memcpy(buffer, ev.data, ev.len);
     }
 }
@@ -185,21 +185,18 @@ QString InterfaceJack::label()
     return "";
 }
 
-void InterfaceJack::keyPressEvent(int port, int channel, int midicode)
+void InterfaceJack::keyPressEvent(int port, int channel, int midicode, int velocity)
 {
     qDebug() << "jack pressed: "+QString::number(midicode) << " channel: " << channel;
     
-    sendEvent(port, "0x90", channel, midicode, 127);
+    sendEvent(port, "0x90", channel, midicode, velocity);
 }
 
-void InterfaceJack::keyReleaseEvent(int port, int channel, int midicode)
+void InterfaceJack::keyReleaseEvent(int port, int channel, int midicode, int velocity)
 {
-    Q_UNUSED(channel);
-    Q_UNUSED(midicode);
-    
     qDebug() << "jack released: "+QString::number(midicode);
     
-    sendEvent(port, "0x80", channel, midicode, 0);
+    sendEvent(port, "0x80", channel, midicode, velocity);
 }
 
 void InterfaceJack::keyPanicEvent(int port, int channel)
