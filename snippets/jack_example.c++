@@ -1,7 +1,9 @@
-#include
-#include
+#include <jack/jack.h>
+#include <jack/midiport.h>
+#include <jack/types.h>
 
-#include
+#include <iostream>
+#include <unistd.h>
 
 // JACK MIDI output port name
 #define MIDI_OUT_PORT_NAME "my_midi_out"
@@ -34,31 +36,32 @@ int main(int argc, char **argv)
     jack_midi_event_t midi_event;
     jack_midi_data_t midi_data[3];
 
+    sleep(10);
+    puts("Ok, starting");
+
     // Note on event
     midi_data[0] = 0x90; // Status byte
     midi_data[1] = 60; // Note number
     midi_data[2] = 100; // Velocity
-    
+
+    jack_nframes_t nframes = jack_get_buffer_size(client);
+
     midi_event.time = 0; // Timestamp in frames
     midi_event.size = sizeof(midi_data); // Size of MIDI data
-    midi_event.buffer = jack_midi_event_reserve(jack_port_midi_buffer(midi_out_port), 0, midi_event.size); // Reserve space in the buffer
+    midi_event.buffer = jack_midi_event_reserve(jack_port_get_buffer(midi_out_port, nframes), 0, midi_event.size); // Reserve space in the buffer
     memcpy(midi_event.buffer, midi_data, sizeof(midi_data)); // Copy the MIDI data to the buffer
-    jack_midi_event_write(jack_port_midi_buffer(midi_out_port), &midi_event); // Write the MIDI event to the buffer
-    
-    
-    
-    
-    
+    jack_midi_event_write(jack_port_get_buffer(midi_out_port, nframes), midi_event.time, midi_event.buffer, midi_event.size); // Write the MIDI event to the buffer
+
     // Note off event
     midi_data[0] = 0x80; // Status byte
     midi_data[1] = 60; // Note number
     midi_data[2] = 0; // Velocity
-    
+
     midi_event.time = 44100; // Timestamp in frames
     midi_event.size = sizeof(midi_data); // Size of MIDI data
-    midi_event.buffer = jack_midi_event_reserve(jack_port_midi_buffer(midi_out_port), 0, midi_event.size); // Reserve space in the buffer
+    midi_event.buffer = jack_midi_event_reserve(jack_port_get_buffer(midi_out_port, nframes), 0, midi_event.size); // Reserve space in the buffer
     memcpy(midi_event.buffer, midi_data, sizeof(midi_data)); // Copy the MIDI data to the buffer
-    jack_midi_event_write(jack_port_midi_buffer(midi_out_port), &midi_event); // Write the MIDI event to the buffer
+    jack_midi_event_write(jack_port_get_buffer(midi_out_port, nframes), midi_event.time, midi_event.buffer, midi_event.size); // Write the MIDI event to the buffer
 
     // Disconnect the client and close JACK
     jack_deactivate(client);
